@@ -5,7 +5,7 @@ const CONFIG = {
     APP_SECRET: 'Lc3U2cR6tQ3g5LFWQCWARcrlfiAbIbpL',
 
     // 用户访问令牌 - 注意：在实际生产环境中，这应该通过OAuth流程获取
-    USER_ACCESS_TOKEN: 'u-fIxh3wCld5FG0aQgpTOcJH4gnrUNl4EroG20ghg020HT',
+    USER_ACCESS_TOKEN: 'u-dFOvT5oAN73GwQGTDNVOgX11lluhl4EPNww005u025k_',
 
     // 知识空间ID
     SPACE_ID: '7520465195491311619',
@@ -14,9 +14,9 @@ const CONFIG = {
     API_BASE_URL: 'https://open.feishu.cn/open-apis',
 
     // 因为浏览器的CORS限制，需要使用代理服务器
-    // 在Netlify部署时使用Netlify Functions
+    // 这里可以配置一个代理服务器URL，或者使用Chrome插件禁用CORS
     USE_PROXY: true,
-    PROXY_URL: '/api',
+    PROXY_URL: 'http://localhost:3000',
 
     // Emoji映射表（部分常用的）
     EMOJI_MAP: {

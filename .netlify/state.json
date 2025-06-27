@@ -1,0 +1,19 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "Chengdu",
+			"country": {
+				"code": "CN",
+				"name": "China"
+			},
+			"subdivision": {
+				"code": "SC",
+				"name": "Sichuan"
+			},
+			"timezone": "Asia/Shanghai",
+			"latitude": 30.6667,
+			"longitude": 104.0667
+		},
+		"timestamp": 1751040165118
+	}
+}
