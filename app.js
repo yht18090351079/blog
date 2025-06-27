@@ -157,6 +157,9 @@ class FeishuDocumentViewer {
 
             this.currentDocument = { id: documentId, blocks: blocksData };
 
+            // 生成文档目录
+            this.generateDocumentOutline();
+
         } catch (error) {
             console.error('加载文档内容失败:', error);
             this.showError('加载文档内容失败: ' + error.message);
@@ -222,6 +225,145 @@ class FeishuDocumentViewer {
             // 桌面端布局
             sidebar.style.position = 'relative';
             sidebar.style.transform = 'translateX(0)';
+        }
+    }
+
+    // 切换tab
+    switchTab(tabName) {
+        // 更新tab按钮状态
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+        // 更新tab内容显示
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+
+        if (tabName === 'documents') {
+            document.getElementById('documentsTab').classList.add('active');
+        } else if (tabName === 'outline') {
+            document.getElementById('outlineTab').classList.add('active');
+        }
+    }
+
+    // 生成文档目录
+    generateDocumentOutline() {
+        const outlineElement = document.getElementById('documentOutline');
+
+        // 查找所有标题元素
+        const headings = document.querySelectorAll('[data-heading-level]');
+
+        if (headings.length === 0) {
+            outlineElement.innerHTML = '<div class="outline-empty">当前文档无标题</div>';
+            return;
+        }
+
+        outlineElement.innerHTML = '';
+
+        headings.forEach(heading => {
+            const level = parseInt(heading.getAttribute('data-heading-level'));
+            const text = heading.getAttribute('data-heading-text');
+            const id = heading.id;
+
+            if (text && id) {
+                const outlineItem = document.createElement('div');
+                outlineItem.className = `outline-item outline-level-${level}`;
+                outlineItem.setAttribute('data-target', id);
+
+                const outlineText = document.createElement('div');
+                outlineText.className = 'outline-text';
+                outlineText.textContent = text;
+                outlineText.title = text; // 显示完整文本的tooltip
+
+                outlineItem.appendChild(outlineText);
+
+                // 添加点击事件
+                outlineItem.addEventListener('click', () => {
+                    this.scrollToHeading(id);
+                });
+
+                outlineElement.appendChild(outlineItem);
+            }
+        });
+
+        // 设置滚动监听
+        this.setupScrollListener();
+    }
+
+    // 滚动到指定标题
+    scrollToHeading(headingId) {
+        const targetElement = document.getElementById(headingId);
+        if (targetElement) {
+            // 更新目录中的活动状态
+            document.querySelectorAll('.outline-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-target="${headingId}"]`).classList.add('active');
+
+            // 滚动到目标元素
+            targetElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+
+            // 添加高亮效果
+            targetElement.style.backgroundColor = '#e3f2fd';
+            setTimeout(() => {
+                targetElement.style.backgroundColor = '';
+            }, 2000);
+        }
+    }
+
+    // 监听滚动事件，更新目录中的活动状态
+    setupScrollListener() {
+        const contentArea = document.querySelector('.document-content');
+        if (!contentArea) return;
+
+        let ticking = false;
+
+        contentArea.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    this.updateActiveOutlineItem();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+    }
+
+    // 更新目录中的活动状态
+    updateActiveOutlineItem() {
+        const headings = document.querySelectorAll('[data-heading-level]');
+        const contentArea = document.querySelector('.document-content');
+
+        if (!headings.length || !contentArea) return;
+
+        let activeHeading = null;
+
+        // 找到当前可见区域的标题
+        headings.forEach(heading => {
+            const rect = heading.getBoundingClientRect();
+            const containerRect = contentArea.getBoundingClientRect();
+
+            // 如果标题在可视区域内或在上方
+            if (rect.top <= containerRect.top + 100) {
+                activeHeading = heading;
+            }
+        });
+
+        // 更新目录中的活动状态
+        document.querySelectorAll('.outline-item').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        if (activeHeading) {
+            const activeItem = document.querySelector(`[data-target="${activeHeading.id}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+            }
         }
     }
 }

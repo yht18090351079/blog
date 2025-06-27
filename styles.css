@@ -5,6 +5,13 @@
     box-sizing: border-box;
 }
 
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+    /* 防止页面级别的滚动 */
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
     background-color: #f5f7fa;
@@ -13,9 +20,12 @@ body {
 }
 
 .container {
-    min-height: 100vh;
+    height: 100vh;
+    /* 使用视窗高度而不是min-height */
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    /* 防止容器级别的滚动 */
 }
 
 /* 头部样式 */
@@ -66,6 +76,8 @@ body {
     flex: 1;
     display: flex;
     height: calc(100vh - 80px);
+    overflow: hidden;
+    /* 防止整体页面滚动 */
 }
 
 /* 侧边栏样式 */
@@ -75,6 +87,10 @@ body {
     border-right: 1px solid #e1e8ed;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    /* 确保侧边栏占满可用高度 */
+    overflow: hidden;
+    /* 侧边栏容器本身不滚动 */
 }
 
 .sidebar-header {
@@ -83,6 +99,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
+    /* 侧边栏头部不参与缩放，保持固定高度 */
 }
 
 .tab-buttons {
@@ -118,6 +136,8 @@ body {
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    height: 0;
+    /* 强制使用flex布局计算高度 */
 }
 
 .tab-content {
@@ -125,6 +145,8 @@ body {
     overflow: hidden;
     display: none;
     flex-direction: column;
+    height: 100%;
+    /* 确保tab内容占满可用高度 */
 }
 
 .tab-content.active {
@@ -149,7 +171,12 @@ body {
 .document-list {
     flex: 1;
     overflow-y: auto;
+    /* 文档列表独立滚动 */
+    overflow-x: hidden;
+    /* 防止水平滚动 */
     padding: 0.5rem 0;
+    height: 0;
+    /* 强制使用flex布局计算高度 */
 }
 
 .document-item {
@@ -187,7 +214,12 @@ body {
 .document-outline {
     flex: 1;
     overflow-y: auto;
+    /* 文档目录独立滚动 */
+    overflow-x: hidden;
+    /* 防止水平滚动 */
     padding: 0.5rem 0;
+    height: 0;
+    /* 强制使用flex布局计算高度 */
 }
 
 .outline-empty {
@@ -255,12 +287,18 @@ body {
     background: white;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    /* 确保主内容区占满可用高度 */
+    overflow: hidden;
+    /* 主内容区容器本身不滚动 */
 }
 
 .content-header {
     padding: 1rem 2rem;
     border-bottom: 1px solid #e1e8ed;
     background: #fafbfc;
+    flex-shrink: 0;
+    /* 头部不参与缩放，保持固定高度 */
 }
 
 .content-header h2 {
@@ -271,7 +309,12 @@ body {
 .document-content {
     flex: 1;
     overflow-y: auto;
+    /* 只有内容区域可以滚动 */
+    overflow-x: hidden;
+    /* 防止水平滚动 */
     padding: 2rem;
+    height: 0;
+    /* 强制使用flex布局计算高度 */
 }
 
 .welcome-message {
@@ -958,15 +1001,33 @@ body {
 @media (max-width: 768px) {
     .main-content {
         flex-direction: column;
+        height: calc(100vh - 60px);
+        /* 调整移动端高度 */
     }
 
     .sidebar {
         width: 100%;
-        height: 200px;
+        height: 40vh;
+        /* 侧边栏占40%视窗高度 */
+        max-height: 300px;
+        /* 最大高度限制 */
+        overflow: hidden;
+        /* 确保侧边栏容器不滚动 */
+    }
+
+    .content-area {
+        height: 60vh;
+        /* 内容区占60%视窗高度 */
+        overflow: hidden;
+        /* 确保内容区容器不滚动 */
     }
 
     .document-content {
         padding: 1rem;
+        overflow-y: auto;
+        /* 内容区独立滚动 */
+        height: 100%;
+        /* 使用全部可用高度 */
     }
 
     .header {
@@ -975,5 +1036,20 @@ body {
 
     .header h1 {
         font-size: 1.2rem;
+    }
+
+    /* 移动端tab按钮样式调整 */
+    .tab-btn {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    /* 移动端文档列表和目录样式调整 */
+    .document-list,
+    .document-outline {
+        overflow-y: auto;
+        /* 确保列表和目录可以独立滚动 */
+        height: 0;
+        /* 强制使用flex布局 */
     }
 }
