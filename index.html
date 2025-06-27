@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞书文档浏览器</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>飞书文档浏览器</h1>
+            <div class="loading-indicator" id="loadingIndicator" style="display: none;">
+                <div class="spinner"></div>
+                <span>加载中...</span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- 侧边栏 - 文档列表和目录导航 -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <div class="tab-buttons">
+                        <button class="tab-btn active" data-tab="documents">📚 文档列表</button>
+                        <button class="tab-btn" data-tab="outline">📋 文档目录</button>
+                    </div>
+                    <button id="refreshBtn" class="refresh-btn">🔄</button>
+                </div>
+                <div class="sidebar-content">
+                    <!-- 文档列表 Tab -->
+                    <div id="documentsTab" class="tab-content active">
+                        <div class="document-list" id="documentList">
+                            <!-- 文档列表将在这里动态生成 -->
+                        </div>
+                    </div>
+                    <!-- 文档目录 Tab -->
+                    <div id="outlineTab" class="tab-content">
+                        <div class="document-outline" id="documentOutline">
+                            <div class="outline-empty">请先选择一个文档</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- 主内容区 - 文档内容 -->
+            <main class="content-area">
+                <div class="content-header">
+                    <h2 id="documentTitle">请选择一个文档</h2>
+                </div>
+                <div class="document-content" id="documentContent">
+                    <div class="welcome-message">
+                        <p>👈 请从左侧列表中选择一个文档开始阅读</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 错误提示模态框 -->
+    <div class="modal" id="errorModal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeErrorModal()">&times;</span>
+            <h3>错误</h3>
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="feishu-api.js"></script>
+    <script src="document-renderer.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

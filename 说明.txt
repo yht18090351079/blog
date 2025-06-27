@@ -1,0 +1,1584 @@
+我想做一个网页 只用 html css js
+功能是从飞书拿到文档内容，包括文本 表格 图片 链接等，在网页中显示
+
+注意 
+App ID
+cli_a8d4ae3326b8100b
+App Secret
+Lc3U2cR6tQ3g5LFWQCWARcrlfiAbIbpL
+ "space_id": "7520465195491311619",
+第一步：获得文档列表
+const lark = require('@larksuiteoapi/node-sdk');
+
+// 开发者复制该Demo后，需要修改Demo里面的"app id", "app secret"为自己应用的appId, appSecret
+const client = new lark.Client({
+	appId: 'app id',
+	appSecret: 'app secret',
+});
+
+client.wiki.v2.spaceNode.list({
+		path: {
+			space_id: '7520465195491311619',
+		},
+	},
+	lark.withUserAccessToken("u-fIxh3wCld5FG0aQgpTOcJH4gnrUNl4EroG20ghg020HT")
+).then(res => {
+	console.log(res);
+}).catch(e => {
+	console.error(JSON.stringify(e.response.data, null, 4));
+});
+
+这样获得了所有文档
+{
+  "code": 0,
+  "data": {
+    "has_more": false,
+    "items": [
+      {
+        "creator": "ou_43d77caacb8184b6330e3c0de260efb9",
+        "has_child": false,
+        "node_create_time": "1750994752",
+        "node_token": "RcAtwyyBViiAZ1kPDotcXusOnxf",
+        "node_type": "origin",
+        "obj_create_time": "1750994752",
+        "obj_edit_time": "1751009224",
+        "obj_token": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "obj_type": "docx",
+        "origin_node_token": "RcAtwyyBViiAZ1kPDotcXusOnxf",
+        "origin_space_id": "7520465195491311619",
+        "owner": "ou_43d77caacb8184b6330e3c0de260efb9",
+        "parent_node_token": "",
+        "space_id": "7520465195491311619",
+        "title": "首页"
+      },
+      {
+        "creator": "ou_43d77caacb8184b6330e3c0de260efb9",
+        "has_child": false,
+        "node_create_time": "1751003202",
+        "node_token": "N8DTwByiQiRWWkk4qGYcZ7tcnvf",
+        "node_type": "origin",
+        "obj_create_time": "1751003202",
+        "obj_edit_time": "1751003202",
+        "obj_token": "B8B0dCALAosOGLxgOypcpK0mn2b",
+        "obj_type": "docx",
+        "origin_node_token": "N8DTwByiQiRWWkk4qGYcZ7tcnvf",
+        "origin_space_id": "7520465195491311619",
+        "owner": "ou_43d77caacb8184b6330e3c0de260efb9",
+        "parent_node_token": "",
+        "space_id": "7520465195491311619",
+        "title": "业务经营周报"
+      }
+    ],
+    "page_token": ""
+  },
+  "msg": "success"
+}
+
+
+第二步 再根据   "obj_token": "ON84dWZc5otpOjxEn9AcYSdlnWh", 获得文档块内容
+ON84dWZc5otpOjxEn9AcYSdlnWh
+const lark = require('@larksuiteoapi/node-sdk');
+
+// 开发者复制该Demo后，需要修改Demo里面的"app id", "app secret"为自己应用的appId, appSecret
+const client = new lark.Client({
+	appId: 'app id',
+	appSecret: 'app secret',
+});
+
+client.docx.v1.documentBlock.list({
+		path: {
+			document_id: 'ON84dWZc5otpOjxEn9AcYSdlnWh',
+		},
+		params: {
+			page_size: 500,
+			document_revision_id: -1,
+		},
+	},
+	lark.withUserAccessToken("u-fIxh3wCld5FG0aQgpTOcJH4gnrUNl4EroG20ghg020HT")
+).then(res => {
+	console.log(res);
+}).catch(e => {
+	console.error(JSON.stringify(e.response.data, null, 4));
+});
+
+这样获得
+{
+  "code": 0,
+  "data": {
+    "has_more": false,
+    "items": [
+      {
+        "block_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "block_type": 1,
+        "children": [
+          "JVUmdWdBpo1Q8NxzNrycUiwFnXd",
+          "KNg7d1m7HoJj45xA43NcBI1vn6b",
+          "doxcnTnQBMqLFhjeQGmUeAWr8jb",
+          "KV4FdltJBo2Nx2x4zWgc0aDjnif",
+          "doxcn1mwXFuho9xWEq6El9zJx5c",
+          "doxcnzuV754zGenS4cKY50Mopbh",
+          "doxcnmIwTqlGOw1DQOdGX0qiHTD",
+          "doxcnFggZ0SldPc0smXVGv3yeSh",
+          "doxcnWdgnpWG64MpmCRBuacDjEf",
+          "doxcn6oPYKJg6BjZyDUUWMiWfDc",
+          "doxcniQGT1WZ1V9pozA50yBpFSZ",
+          "doxcnl9Ij5AdQkhtfATjUa5ubTf",
+          "doxcnvjHOJwVAUXy8EHu9A2emdd",
+          "KM5Ud5AcRo1CJfxc8jVcAJwvnJe",
+          "Csk9d6zBiotBwlxbJSucVYSqnMg",
+          "NK4adMNCEoXIH1xBfHWcMZOanMe",
+          "YsmEdz16XoVtFLxI1kBcMCeun7b",
+          "OJ7RdoQ7moVvWbxHr1scFMlYnXb",
+          "BjXEdmKRPo113sxtjvPcWiMUn4r",
+          "KuQNdgDvFol5CMxPj0RcmananMb",
+          "Sv8vdqrPlovWcUxVKc8c3UhXn7e",
+          "EZ75dP5f6ozhSnxAzR0cQdJCn9d",
+          "HaTzdudDKoU74uxgPtPcguPnnkc",
+          "R7KFdrCWnohc2TxmMscc22lLnCc",
+          "OYImdwZOuok1IfxRlqjc24ujnbc",
+          "UjtfdXKCyoTSHYxT75kc6Uhwnbf",
+          "OFn6dhSXcownjIx9BC6cUoxHn3c",
+          "Iy7fdKBm0oB0LmxVCEdcl44Pn4e"
+        ],
+        "page": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "首页",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1
+          }
+        },
+        "parent_id": ""
+      },
+      {
+        "block_id": "JVUmdWdBpo1Q8NxzNrycUiwFnXd",
+        "block_type": 24,
+        "children": [
+          "T0AqddMkJoum3sxexixc9g0wntb",
+          "N5KydMngpolgI1xQk0mcQSthndb"
+        ],
+        "grid": {
+          "column_size": 2
+        },
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "T0AqddMkJoum3sxexixc9g0wntb",
+        "block_type": 25,
+        "children": [
+          "FWZEdolOlodEwHxGIh2cvBjPnfg"
+        ],
+        "grid_column": {
+          "width_ratio": 50
+        },
+        "parent_id": "JVUmdWdBpo1Q8NxzNrycUiwFnXd"
+      },
+      {
+        "block_id": "FWZEdolOlodEwHxGIh2cvBjPnfg",
+        "block_type": 2,
+        "parent_id": "T0AqddMkJoum3sxexixc9g0wntb",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "N5KydMngpolgI1xQk0mcQSthndb",
+        "block_type": 25,
+        "children": [
+          "YpeOdz9BeoDyTHxXdKqcWnKhnUd"
+        ],
+        "grid_column": {
+          "width_ratio": 50
+        },
+        "parent_id": "JVUmdWdBpo1Q8NxzNrycUiwFnXd"
+      },
+      {
+        "block_id": "YpeOdz9BeoDyTHxXdKqcWnKhnUd",
+        "block_type": 2,
+        "parent_id": "N5KydMngpolgI1xQk0mcQSthndb",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "KNg7d1m7HoJj45xA43NcBI1vn6b",
+        "block_type": 31,
+        "children": [
+          "WfPbdNiR8oRvJtxElosc8e39nkb",
+          "PicudSr1ZoIKQmx4oQjcynyunbc",
+          "NPbnd2D8koKSBgxQWYpcv6lln3k",
+          "EajVdnasxoVzkYxTF32csZBxnDc",
+          "XVlfdFymIot2a7x6sJXcXFFsnzd",
+          "PKy4d0NxDoOXsKxaf3IcxuAwnue"
+        ],
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "table": {
+          "cells": [
+            "WfPbdNiR8oRvJtxElosc8e39nkb",
+            "PicudSr1ZoIKQmx4oQjcynyunbc",
+            "NPbnd2D8koKSBgxQWYpcv6lln3k",
+            "EajVdnasxoVzkYxTF32csZBxnDc",
+            "XVlfdFymIot2a7x6sJXcXFFsnzd",
+            "PKy4d0NxDoOXsKxaf3IcxuAwnue"
+          ],
+          "property": {
+            "column_size": 3,
+            "column_width": [
+              100,
+              100,
+              100
+            ],
+            "merge_info": [
+              {
+                "col_span": 1,
+                "row_span": 1
+              },
+              {
+                "col_span": 1,
+                "row_span": 1
+              },
+              {
+                "col_span": 1,
+                "row_span": 1
+              },
+              {
+                "col_span": 1,
+                "row_span": 1
+              },
+              {
+                "col_span": 1,
+                "row_span": 1
+              },
+              {
+                "col_span": 1,
+                "row_span": 1
+              }
+            ],
+            "row_size": 2
+          }
+        }
+      },
+      {
+        "block_id": "WfPbdNiR8oRvJtxElosc8e39nkb",
+        "block_type": 32,
+        "children": [
+          "LUswdfSdwoL0cNxHbSicla0qnBc"
+        ],
+        "parent_id": "KNg7d1m7HoJj45xA43NcBI1vn6b",
+        "table_cell": {}
+      },
+      {
+        "block_id": "LUswdfSdwoL0cNxHbSicla0qnBc",
+        "block_type": 2,
+        "parent_id": "WfPbdNiR8oRvJtxElosc8e39nkb",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "PicudSr1ZoIKQmx4oQjcynyunbc",
+        "block_type": 32,
+        "children": [
+          "TpnUdcVYloQ2jLxDXFIcrtF8nSe"
+        ],
+        "parent_id": "KNg7d1m7HoJj45xA43NcBI1vn6b",
+        "table_cell": {}
+      },
+      {
+        "block_id": "TpnUdcVYloQ2jLxDXFIcrtF8nSe",
+        "block_type": 2,
+        "parent_id": "PicudSr1ZoIKQmx4oQjcynyunbc",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "NPbnd2D8koKSBgxQWYpcv6lln3k",
+        "block_type": 32,
+        "children": [
+          "VvlYd2KFqo93CNxc34hcwhvYnPe"
+        ],
+        "parent_id": "KNg7d1m7HoJj45xA43NcBI1vn6b",
+        "table_cell": {}
+      },
+      {
+        "block_id": "VvlYd2KFqo93CNxc34hcwhvYnPe",
+        "block_type": 2,
+        "parent_id": "NPbnd2D8koKSBgxQWYpcv6lln3k",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "EajVdnasxoVzkYxTF32csZBxnDc",
+        "block_type": 32,
+        "children": [
+          "SRxIdZSDyoTjgVxpzZDcYr4Ynvb"
+        ],
+        "parent_id": "KNg7d1m7HoJj45xA43NcBI1vn6b",
+        "table_cell": {}
+      },
+      {
+        "block_id": "SRxIdZSDyoTjgVxpzZDcYr4Ynvb",
+        "block_type": 2,
+        "parent_id": "EajVdnasxoVzkYxTF32csZBxnDc",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "XVlfdFymIot2a7x6sJXcXFFsnzd",
+        "block_type": 32,
+        "children": [
+          "VSBxd4xqjohGJWxbiMVcqxA3n7g"
+        ],
+        "parent_id": "KNg7d1m7HoJj45xA43NcBI1vn6b",
+        "table_cell": {}
+      },
+      {
+        "block_id": "VSBxd4xqjohGJWxbiMVcqxA3n7g",
+        "block_type": 2,
+        "parent_id": "XVlfdFymIot2a7x6sJXcXFFsnzd",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "PKy4d0NxDoOXsKxaf3IcxuAwnue",
+        "block_type": 32,
+        "children": [
+          "OxbKdABd5okub9x0DVgcJN14noe"
+        ],
+        "parent_id": "KNg7d1m7HoJj45xA43NcBI1vn6b",
+        "table_cell": {}
+      },
+      {
+        "block_id": "OxbKdABd5okub9x0DVgcJN14noe",
+        "block_type": 2,
+        "parent_id": "PKy4d0NxDoOXsKxaf3IcxuAwnue",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "doxcnTnQBMqLFhjeQGmUeAWr8jb",
+        "block_type": 15,
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "quote": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "KV4FdltJBo2Nx2x4zWgc0aDjnif",
+        "block_type": 15,
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "quote": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "在首页你可以对空间进行说明，比如包含以下内容。",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "doxcn1mwXFuho9xWEq6El9zJx5c",
+        "block_type": 3,
+        "heading1": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "🎯  愿景和目标",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        },
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "doxcnzuV754zGenS4cKY50Mopbh",
+        "block_type": 15,
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "quote": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "这里你可以描述知识空间建设的目标和意义，有利于团队成员理解目标并朝着目标努力。",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "doxcnmIwTqlGOw1DQOdGX0qiHTD",
+        "block_type": 3,
+        "heading1": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "⛳️  知识空间简介",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        },
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "doxcnFggZ0SldPc0smXVGv3yeSh",
+        "block_type": 15,
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "quote": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "这里你可以介绍知识空间的主要内容和面向的成员群体。",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "doxcnWdgnpWG64MpmCRBuacDjEf",
+        "block_type": 3,
+        "heading1": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "⭐️  常用文档和链接",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        },
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "doxcn6oPYKJg6BjZyDUUWMiWfDc",
+        "block_type": 15,
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "quote": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "这里你可以将需要关注的文档链接粘贴在此处，方便成员快速访问。",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "doxcniQGT1WZ1V9pozA50yBpFSZ",
+        "block_type": 3,
+        "heading1": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "💡  知识空间帮助",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        },
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "doxcnl9Ij5AdQkhtfATjUa5ubTf",
+        "block_type": 15,
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "quote": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "这里你可以添加知识库使用规范、操作流程、管理员联系方式等。",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "doxcnvjHOJwVAUXy8EHu9A2emdd",
+        "block_type": 2,
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "KM5Ud5AcRo1CJfxc8jVcAJwvnJe",
+        "block_type": 34,
+        "children": [
+          "AMMDdVOT7oWXpSxbakkc2NfhnST"
+        ],
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "quote_container": {}
+      },
+      {
+        "block_id": "AMMDdVOT7oWXpSxbakkc2NfhnST",
+        "block_type": 2,
+        "parent_id": "KM5Ud5AcRo1CJfxc8jVcAJwvnJe",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "用 1-3 句话概括整体情况",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "Csk9d6zBiotBwlxbJSucVYSqnMg",
+        "block_type": 19,
+        "callout": {
+          "background_color": 5,
+          "border_color": 5,
+          "emoji_id": "round_pushpin"
+        },
+        "children": [
+          "UOPgdvpnNouSkXxZluucRybSneh"
+        ],
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "UOPgdvpnNouSkXxZluucRybSneh",
+        "block_type": 2,
+        "parent_id": "Csk9d6zBiotBwlxbJSucVYSqnMg",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "各门店本周销售量 ",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "300 单，",
+                "text_element_style": {
+                  "bold": true,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "销售总额 ",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "￥4972.44 ，",
+                "text_element_style": {
+                  "bold": true,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "其中堂食 ",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "￥2972.81",
+                "text_element_style": {
+                  "bold": true,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "，外卖 ",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "￥2000.63",
+                "text_element_style": {
+                  "bold": true,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "\n",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "本周各门店经营状况对比上周仍呈现上涨趋势 ",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "↑",
+                "text_element_style": {
+                  "bold": true,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "text_color": 1,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "，各门店营业额均有明显上升 ",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "↑",
+                "text_element_style": {
+                  "bold": true,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "text_color": 1,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "，经营状况持续好转",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "NK4adMNCEoXIH1xBfHWcMZOanMe",
+        "block_type": 34,
+        "children": [
+          "KG4rdYE2Topcl8xTfKscxDN2n3c"
+        ],
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "quote_container": {}
+      },
+      {
+        "block_id": "KG4rdYE2Topcl8xTfKscxDN2n3c",
+        "block_type": 2,
+        "parent_id": "NK4adMNCEoXIH1xBfHWcMZOanMe",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "复制",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "多维表格的仪表盘",
+                "text_element_style": {
+                  "bold": true,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "链接，粘贴在文档中即可展示图表。修改多维表格数据后，点击刷新即可更新仪表盘数据",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "YsmEdz16XoVtFLxI1kBcMCeun7b",
+        "block_type": 26,
+        "iframe": {
+          "component": {
+            "iframe_type": 99,
+            "url": "https%3A%2F%2Fwww.feishu.cn%2Fshare%2Fbase%2Fdashboard%2FshrcnQtoK2yVLDZysTnSi4fPJ8d"
+          }
+        },
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "OJ7RdoQ7moVvWbxHr1scFMlYnXb",
+        "block_type": 2,
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "BjXEdmKRPo113sxtjvPcWiMUn4r",
+        "block_type": 3,
+        "heading1": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "二、商品销售概括",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        },
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "KuQNdgDvFol5CMxPj0RcmananMb",
+        "block_type": 19,
+        "callout": {
+          "background_color": 5,
+          "border_color": 5,
+          "emoji_id": "round_pushpin"
+        },
+        "children": [
+          "DSUzdOeOkoPNjoxflQmcpP86nZb"
+        ],
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "DSUzdOeOkoPNjoxflQmcpP86nZb",
+        "block_type": 2,
+        "parent_id": "KuQNdgDvFol5CMxPj0RcmananMb",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "甜品冰淇淋稳居高位，大范围领先",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "Sv8vdqrPlovWcUxVKc8c3UhXn7e",
+        "block_type": 34,
+        "children": [
+          "C959dpr5AoGIuUxzza4cP51RnOe"
+        ],
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "quote_container": {}
+      },
+      {
+        "block_id": "C959dpr5AoGIuUxzza4cP51RnOe",
+        "block_type": 2,
+        "parent_id": "Sv8vdqrPlovWcUxVKc8c3UhXn7e",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "可以通过切换多维表格的视图，展示画册或列表视图",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "EZ75dP5f6ozhSnxAzR0cQdJCn9d",
+        "block_type": 2,
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": " ",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "HaTzdudDKoU74uxgPtPcguPnnkc",
+        "block_type": 3,
+        "heading1": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "三、新业务开展进度",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        },
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "R7KFdrCWnohc2TxmMscc22lLnCc",
+        "block_type": 19,
+        "callout": {
+          "background_color": 5,
+          "border_color": 5,
+          "emoji_id": "round_pushpin"
+        },
+        "children": [
+          "YxxedPuJdoT1rFxrW6PcX0EBnCb"
+        ],
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "YxxedPuJdoT1rFxrW6PcX0EBnCb",
+        "block_type": 2,
+        "parent_id": "R7KFdrCWnohc2TxmMscc22lLnCc",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "蛇口百草堂店筹备进度 70%，暂无风险",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "OYImdwZOuok1IfxRlqjc24ujnbc",
+        "block_type": 34,
+        "children": [
+          "Y8AIddLlUotYf3xMfpbcIGGinie",
+          "X31AdMw00o0e1VxeMQac8JWRnLs"
+        ],
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "quote_container": {}
+      },
+      {
+        "block_id": "Y8AIddLlUotYf3xMfpbcIGGinie",
+        "block_type": 2,
+        "parent_id": "OYImdwZOuok1IfxRlqjc24ujnbc",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "插入",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "任务清单",
+                "text_element_style": {
+                  "bold": true,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "，切换至甘特图视图，可清晰展示指派的任务、项目成员的进度、项目里程碑等",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "X31AdMw00o0e1VxeMQac8JWRnLs",
+        "block_type": 2,
+        "parent_id": "OYImdwZOuok1IfxRlqjc24ujnbc",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "鼠标悬浮在空白行左侧，在“",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "+",
+                "text_element_style": {
+                  "bold": true,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "”工具栏的 ",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "团队协作 ",
+                "text_element_style": {
+                  "bold": true,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": "模块点击",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": " 任务清单",
+                "text_element_style": {
+                  "bold": true,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            },
+            {
+              "text_run": {
+                "content": " 插入文档",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      },
+      {
+        "block_id": "UjtfdXKCyoTSHYxT75kc6Uhwnbf",
+        "block_type": 999,
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "undefined": {}
+      },
+      {
+        "block_id": "OFn6dhSXcownjIx9BC6cUoxHn3c",
+        "block_type": 27,
+        "image": {
+          "align": 2,
+          "height": 300,
+          "token": "T0HIbA1cFoBgvAxr6suc79d7n0f",
+          "width": 300
+        },
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh"
+      },
+      {
+        "block_id": "Iy7fdKBm0oB0LmxVCEdcl44Pn4e",
+        "block_type": 2,
+        "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+        "text": {
+          "elements": [
+            {
+              "text_run": {
+                "content": "",
+                "text_element_style": {
+                  "bold": false,
+                  "inline_code": false,
+                  "italic": false,
+                  "strikethrough": false,
+                  "underline": false
+                }
+              }
+            }
+          ],
+          "style": {
+            "align": 1,
+            "folded": false
+          }
+        }
+      }
+    ]
+  },
+  "msg": "success"
+}
+获得了每一个块，和其属性
+然后再根据块id
+"children": [
+          "JVUmdWdBpo1Q8NxzNrycUiwFnXd",
+          "KNg7d1m7HoJj45xA43NcBI1vn6b",
+          "doxcnTnQBMqLFhjeQGmUeAWr8jb",
+          "KV4FdltJBo2Nx2x4zWgc0aDjnif",
+          "doxcn1mwXFuho9xWEq6El9zJx5c",
+          "doxcnzuV754zGenS4cKY50Mopbh",
+          "doxcnmIwTqlGOw1DQOdGX0qiHTD",
+          "doxcnFggZ0SldPc0smXVGv3yeSh",
+          "doxcnWdgnpWG64MpmCRBuacDjEf",
+          "doxcn6oPYKJg6BjZyDUUWMiWfDc",
+          "doxcniQGT1WZ1V9pozA50yBpFSZ",
+          "doxcnl9Ij5AdQkhtfATjUa5ubTf",
+          "doxcnvjHOJwVAUXy8EHu9A2emdd",
+          "KM5Ud5AcRo1CJfxc8jVcAJwvnJe",
+          "Csk9d6zBiotBwlxbJSucVYSqnMg",
+          "NK4adMNCEoXIH1xBfHWcMZOanMe",
+          "YsmEdz16XoVtFLxI1kBcMCeun7b",
+          "OJ7RdoQ7moVvWbxHr1scFMlYnXb",
+          "BjXEdmKRPo113sxtjvPcWiMUn4r",
+          "KuQNdgDvFol5CMxPj0RcmananMb",
+          "Sv8vdqrPlovWcUxVKc8c3UhXn7e",
+          "EZ75dP5f6ozhSnxAzR0cQdJCn9d",
+          "HaTzdudDKoU74uxgPtPcguPnnkc",
+          "R7KFdrCWnohc2TxmMscc22lLnCc",
+          "OYImdwZOuok1IfxRlqjc24ujnbc",
+          "UjtfdXKCyoTSHYxT75kc6Uhwnbf",
+          "OFn6dhSXcownjIx9BC6cUoxHn3c",
+          "Iy7fdKBm0oB0LmxVCEdcl44Pn4e"
+        ],
+    去找块内容
+
+    const client = new lark.Client({
+	appId: 'app id',
+	appSecret: 'app secret',
+});
+
+client.docx.v1.documentBlock.get({
+		path: {
+			document_id: 'ON84dWZc5otpOjxEn9AcYSdlnWh',
+			block_id: 'KV4FdltJBo2Nx2x4zWgc0aDjnif',
+		},
+		params: {
+			document_revision_id: -1,
+		},
+	},
+	lark.withUserAccessToken("u-fIxh3wCld5FG0aQgpTOcJH4gnrUNl4EroG20ghg020HT")
+).then(res => {
+	console.log(res);
+}).catch(e => {
+	console.error(JSON.stringify(e.response.data, null, 4));
+});
+
+
+获得{
+  "code": 0,
+  "data": {
+    "block": {
+      "block_id": "KV4FdltJBo2Nx2x4zWgc0aDjnif",
+      "block_type": 15,
+      "parent_id": "ON84dWZc5otpOjxEn9AcYSdlnWh",
+      "quote": {
+        "elements": [
+          {
+            "text_run": {
+              "content": "在首页你可以对空间进行说明，比如包含以下内容。",
+              "text_element_style": {
+                "bold": false,
+                "inline_code": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false
+              }
+            }
+          }
+        ],
+        "style": {
+          "align": 1,
+          "folded": false
+        }
+      }
+    }
+  },
+  "msg": "success"
+}
+
+如果块里有子块，就迭代
