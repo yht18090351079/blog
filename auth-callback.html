@@ -84,6 +84,22 @@
         function handleAuthResult() {
             const params = getUrlParams();
 
+            // 调试信息：显示当前URL和参数
+            console.log('当前URL:', window.location.href);
+            console.log('URL参数:', params);
+            console.log('完整URL参数字符串:', window.location.search);
+
+            // 显示调试信息
+            const debugInfo = document.createElement('div');
+            debugInfo.style.cssText = 'margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 4px; font-size: 0.8rem; color: #666; text-align: left; max-width: 500px;';
+            debugInfo.innerHTML = `
+                <strong>调试信息：</strong><br>
+                URL: ${window.location.href}<br>
+                参数: ${JSON.stringify(params, null, 2)}<br>
+                Search: ${window.location.search}
+            `;
+            document.querySelector('.container').appendChild(debugInfo);
+
             if (params.error) {
                 updateMessage(`认证失败: ${params.error}`, 'error');
                 // 通知父窗口认证失败
@@ -106,9 +122,24 @@
                 // 延迟关闭窗口
                 setTimeout(() => {
                     window.close();
-                }, 1000);
+                }, 2000);
             } else {
                 updateMessage('未获取到认证码', 'error');
+
+                // 提供手动重试选项
+                const retryButton = document.createElement('button');
+                retryButton.textContent = '重新尝试认证';
+                retryButton.style.cssText = 'margin-top: 1rem; padding: 0.5rem 1rem; background: #4285f4; color: white; border: none; border-radius: 4px; cursor: pointer;';
+                retryButton.onclick = () => {
+                    if (window.opener) {
+                        window.opener.focus();
+                        window.close();
+                    } else {
+                        window.location.href = '/';
+                    }
+                };
+                document.querySelector('.container').appendChild(retryButton);
+
                 window.opener?.postMessage({
                     type: 'FEISHU_AUTH_ERROR',
                     error: '未获取到认证码'
