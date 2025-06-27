@@ -44,6 +44,54 @@ body {
     font-weight: 600;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* 认证状态样式 */
+.auth-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.auth-info {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.auth-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.auth-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.auth-btn.authenticated {
+    background: #28a745;
+    border-color: #28a745;
+}
+
+.auth-btn.authenticated:hover {
+    background: #218838;
+    border-color: #218838;
+}
+
 /* 加载指示器 */
 .loading-indicator {
     display: flex;
@@ -364,6 +412,38 @@ body {
     margin: 1rem 0;
     border-radius: 0 4px 4px 0;
     font-style: italic;
+}
+
+/* 项目符号列表样式 */
+.block-bullet {
+    margin: 0.5rem 0;
+}
+
+.block-bullet ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    list-style-type: disc;
+}
+
+.block-bullet ul li {
+    margin: 0.25rem 0;
+    line-height: 1.6;
+}
+
+/* 有序列表样式 */
+.block-ordered {
+    margin: 0.5rem 0;
+}
+
+.block-ordered ol {
+    margin: 0;
+    padding-left: 1.5rem;
+    list-style-type: decimal;
+}
+
+.block-ordered ol li {
+    margin: 0.25rem 0;
+    line-height: 1.6;
 }
 
 .block-callout {
@@ -724,6 +804,174 @@ body {
     color: #666;
     font-size: 0.9rem;
     line-height: 1.4;
+}
+
+/* 飞书电子表格样式 */
+.sheet-container {
+    border: 1px solid #e1e8ed;
+    border-radius: 8px;
+    background: white;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.sheet-header {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.sheet-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.sheet-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.sheet-token {
+    background: #e3f2fd;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    font-family: monospace;
+}
+
+.sheet-open-btn {
+    background: #4285f4;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.sheet-open-btn:hover {
+    background: #3367d6;
+}
+
+.sheet-content {
+    padding: 1.5rem;
+}
+
+.sheet-note {
+    background: #f0f8ff;
+    color: #1565c0;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #90caf9;
+    font-size: 0.9rem;
+}
+
+.sheet-note p {
+    margin: 0.5rem 0;
+}
+
+.sheet-note p:first-child {
+    margin-top: 0;
+}
+
+.sheet-note p:last-child {
+    margin-bottom: 0;
+}
+
+.sheet-error {
+    background: #fff5f5;
+    color: #c53030;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #feb2b2;
+    margin: 1rem 0;
+}
+
+.sheet-error-message {
+    font-weight: 500;
+}
+
+/* 工作表列表样式 */
+.sheet-sheets-list {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e1e8ed;
+}
+
+.sheet-sheets-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.sheet-sheets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.sheet-item {
+    background: #f0f8ff;
+    color: #1565c0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 16px;
+    border: 1px solid #90caf9;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.sheet-info {
+    background: #e8f5e8;
+    color: #2e7d32;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.sheet-loading {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+/* 警告信息样式 */
+.sheet-warning {
+    background: #fff8e1;
+    border: 1px solid #ffb74d;
+    border-radius: 6px;
+    padding: 1rem;
+    margin: 0;
+}
+
+.sheet-warning-title {
+    font-weight: 600;
+    color: #e65100;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.sheet-warning-message {
+    color: #bf360c;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+.sheet-warning-suggestions {
+    color: #ff6f00;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.sheet-warning-suggestions strong {
+    color: #e65100;
 }
 
 /* 未定义块样式 */

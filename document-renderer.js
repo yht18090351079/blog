@@ -116,11 +116,20 @@ class DocumentRenderer {
                 case 'quote':
                     await this.renderQuoteBlock(block, element);
                     break;
+                case 'bullet':
+                    await this.renderBulletBlock(block, element);
+                    break;
+                case 'ordered':
+                    await this.renderOrderedBlock(block, element);
+                    break;
                 case 'todo':
                     await this.renderTodoBlock(block, element);
                     break;
                 case 'bitable':
                     await this.renderBitableBlock(block, element);
+                    break;
+                case 'sheet':
+                    await this.renderSheetBlock(block, element);
                     break;
                 case 'callout':
                     await this.renderCalloutBlock(block, blockMap, element, documentId);
@@ -214,6 +223,46 @@ class DocumentRenderer {
         if (quoteData && quoteData.elements) {
             const content = await this.renderTextElements(quoteData.elements);
             element.innerHTML = content;
+        }
+    }
+
+    // 渲染项目符号块
+    async renderBulletBlock(block, element) {
+        const bulletData = block.bullet;
+        if (bulletData && bulletData.elements) {
+            const content = await this.renderTextElements(bulletData.elements);
+            const alignClass = this.getAlignClass(bulletData.style?.align);
+            element.className += ` ${alignClass}`;
+
+            // 创建项目符号列表项
+            const listItem = document.createElement('li');
+            listItem.innerHTML = content;
+
+            // 创建无序列表容器
+            const ul = document.createElement('ul');
+            ul.appendChild(listItem);
+
+            element.appendChild(ul);
+        }
+    }
+
+    // 渲染有序列表块
+    async renderOrderedBlock(block, element) {
+        const orderedData = block.ordered;
+        if (orderedData && orderedData.elements) {
+            const content = await this.renderTextElements(orderedData.elements);
+            const alignClass = this.getAlignClass(orderedData.style?.align);
+            element.className += ` ${alignClass}`;
+
+            // 创建有序列表项
+            const listItem = document.createElement('li');
+            listItem.innerHTML = content;
+
+            // 创建有序列表容器
+            const ol = document.createElement('ol');
+            ol.appendChild(listItem);
+
+            element.appendChild(ol);
         }
     }
 
@@ -359,6 +408,203 @@ class DocumentRenderer {
         } else {
             console.error('多维表格数据结构不正确:', block);
             element.innerHTML = '<div style="color: #f56565;">多维表格数据错误</div>';
+        }
+    }
+
+    // 渲染飞书电子表格块
+    async renderSheetBlock(block, element) {
+        const sheetData = block.sheet;
+        if (sheetData && sheetData.token) {
+            console.log('渲染飞书电子表格:', {
+                block_id: block.block_id,
+                token: sheetData.token
+            });
+
+            // 显示加载状态
+            element.innerHTML = '<div class="sheet-loading">📊 正在加载电子表格信息...</div>';
+
+            try {
+                // 获取电子表格基础信息
+                const spreadsheetInfo = await feishuAPI.getSpreadsheetInfo(sheetData.token);
+                console.log('电子表格信息:', spreadsheetInfo);
+
+                // 获取工作表列表
+                const sheetsData = await feishuAPI.getSpreadsheetSheets(sheetData.token);
+                const sheets = sheetsData.sheets || [];
+                console.log('工作表列表:', sheets);
+
+                // 渲染电子表格内容
+                await this.renderSpreadsheetContent(element, {
+                    spreadsheetInfo: spreadsheetInfo.spreadsheet,
+                    sheets: sheets,
+                    token: sheetData.token
+                });
+
+            } catch (error) {
+                console.error('渲染飞书电子表格失败:', error);
+
+                // 提供降级方案 - 显示基本信息但不调用API
+                this.renderSpreadsheetFallback(element, sheetData.token, error.message);
+            }
+        } else {
+            console.error('飞书电子表格数据不完整:', block);
+            element.innerHTML = '<div class="sheet-error">飞书电子表格数据错误</div>';
+        }
+    }
+
+    // 渲染电子表格内容
+    async renderSpreadsheetContent(element, data) {
+        const { spreadsheetInfo, sheets, token } = data;
+
+        // 创建容器
+        const container = document.createElement('div');
+        container.className = 'sheet-container';
+
+        // 创建标题区域
+        const header = document.createElement('div');
+        header.className = 'sheet-header';
+
+        const title = document.createElement('div');
+        title.className = 'sheet-title';
+        title.innerHTML = `📊 ${spreadsheetInfo.title || '电子表格'}`;
+
+        const meta = document.createElement('div');
+        meta.className = 'sheet-meta';
+
+        // 表格基本信息
+        const infoSpan = document.createElement('span');
+        infoSpan.className = 'sheet-info';
+        infoSpan.innerHTML = `${sheets.length} 个工作表`;
+
+        // 打开链接按钮
+        const openButton = document.createElement('a');
+        openButton.className = 'sheet-open-btn';
+        openButton.href = spreadsheetInfo.url || `https://bytedance.feishu.cn/sheets/${token}`;
+        openButton.target = '_blank';
+        openButton.textContent = '在飞书中打开';
+
+        meta.appendChild(infoSpan);
+        meta.appendChild(openButton);
+        header.appendChild(title);
+        header.appendChild(meta);
+
+        // 工作表列表
+        if (sheets.length > 0) {
+            const sheetsContainer = document.createElement('div');
+            sheetsContainer.className = 'sheet-sheets-list';
+
+            const sheetsTitle = document.createElement('div');
+            sheetsTitle.className = 'sheet-sheets-title';
+            sheetsTitle.textContent = '工作表：';
+
+            const sheetsList = document.createElement('div');
+            sheetsList.className = 'sheet-sheets';
+
+            sheets.forEach(sheet => {
+                const sheetItem = document.createElement('span');
+                sheetItem.className = 'sheet-item';
+                sheetItem.textContent = sheet.title;
+                sheetsList.appendChild(sheetItem);
+            });
+
+            sheetsContainer.appendChild(sheetsTitle);
+            sheetsContainer.appendChild(sheetsList);
+            header.appendChild(sheetsContainer);
+        }
+
+        container.appendChild(header);
+
+        // 创建内容区域
+        const contentArea = document.createElement('div');
+        contentArea.className = 'sheet-content';
+        contentArea.innerHTML = `
+            <div class="sheet-note">
+                <p>🔗 这是一个飞书电子表格</p>
+                <p>标题：${spreadsheetInfo.title || '未命名表格'}</p>
+                ${spreadsheetInfo.owner_id ? `<p>所有者：${spreadsheetInfo.owner_id}</p>` : ''}
+                <p>点击上方"在飞书中打开"按钮查看完整内容</p>
+            </div>
+        `;
+
+        container.appendChild(contentArea);
+
+        element.innerHTML = '';
+        element.appendChild(container);
+    }
+
+    // 电子表格降级渲染（当API调用失败时使用）
+    renderSpreadsheetFallback(element, token, errorMessage) {
+        const container = document.createElement('div');
+        container.className = 'sheet-container';
+
+        // 创建头部
+        const header = document.createElement('div');
+        header.className = 'sheet-header';
+
+        const title = document.createElement('div');
+        title.className = 'sheet-title';
+        title.innerHTML = '📊 飞书电子表格';
+
+        const meta = document.createElement('div');
+        meta.className = 'sheet-meta';
+
+        // 表格ID信息
+        const tokenInfo = document.createElement('span');
+        tokenInfo.className = 'sheet-token';
+        tokenInfo.textContent = `ID: ${token}`;
+
+        // 打开链接按钮
+        const openButton = document.createElement('a');
+        openButton.className = 'sheet-open-btn';
+        openButton.href = `https://bytedance.feishu.cn/sheets/${token}`;
+        openButton.target = '_blank';
+        openButton.textContent = '在飞书中打开';
+
+        meta.appendChild(tokenInfo);
+        meta.appendChild(openButton);
+        header.appendChild(title);
+        header.appendChild(meta);
+        container.appendChild(header);
+
+        // 创建内容区域
+        const contentArea = document.createElement('div');
+        contentArea.className = 'sheet-content';
+
+        // 显示警告信息
+        const warningDiv = document.createElement('div');
+        warningDiv.className = 'sheet-warning';
+        warningDiv.innerHTML = `
+            <div class="sheet-warning-title">⚠️ 无法获取详细信息</div>
+            <div class="sheet-warning-message">
+                ${this.getErrorDisplayMessage(errorMessage)}
+            </div>
+            <div class="sheet-warning-suggestions">
+                <strong>建议：</strong><br>
+                • 点击上方"在飞书中打开"按钮直接访问<br>
+                • 检查是否有该表格的访问权限<br>
+                • 确认表格ID是否正确
+            </div>
+        `;
+
+        contentArea.appendChild(warningDiv);
+        container.appendChild(contentArea);
+
+        element.innerHTML = '';
+        element.appendChild(container);
+    }
+
+    // 获取用户友好的错误信息
+    getErrorDisplayMessage(errorMessage) {
+        if (errorMessage.includes('Path param :spreadsheet_token invalid')) {
+            return '表格ID无效或您没有访问权限';
+        } else if (errorMessage.includes('403')) {
+            return '没有访问权限';
+        } else if (errorMessage.includes('404')) {
+            return '表格不存在或已被删除';
+        } else if (errorMessage.includes('网络')) {
+            return '网络连接失败';
+        } else {
+            return `加载失败：${errorMessage}`;
         }
     }
 

@@ -1,13 +1,30 @@
 // 飞书API接口封装
 class FeishuAPI {
     constructor() {
-        this.userAccessToken = CONFIG.USER_ACCESS_TOKEN;
+        // 如果有认证管理器，优先使用；否则回退到配置中的token
+        this.authManager = window.authManager || null;
+        this.fallbackToken = CONFIG.USER_ACCESS_TOKEN;
     }
 
     // 获取请求头
-    getHeaders() {
+    async getHeaders() {
+        let token = this.fallbackToken;
+
+        // 优先尝试从认证管理器获取有效token
+        if (this.authManager) {
+            try {
+                token = await this.authManager.getValidUserAccessToken();
+            } catch (error) {
+                console.warn('无法从认证管理器获取token，使用配置中的fallback token:', error);
+                // 如果获取失败且没有fallback token，抛出错误
+                if (!this.fallbackToken) {
+                    throw new Error('需要认证：请登录后重试');
+                }
+            }
+        }
+
         return {
-            'Authorization': `Bearer ${this.userAccessToken}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
         };
     }
@@ -15,9 +32,10 @@ class FeishuAPI {
     // 通用请求方法
     async request(endpoint, options = {}) {
         const url = getApiUrl(endpoint);
+        const headers = await this.getHeaders();
         const defaultOptions = {
             method: 'GET',
-            headers: this.getHeaders(),
+            headers: headers,
             ...options
         };
 
@@ -31,6 +49,13 @@ class FeishuAPI {
             console.log('Response:', data);
 
             if (data.code !== 0) {
+                // 如果是认证相关错误，清除token
+                if (data.code === 99991663 || data.code === 99991664 || data.code === 99991665) {
+                    console.warn('认证token无效，清除缓存的token');
+                    if (this.authManager) {
+                        this.authManager.clearTokenData();
+                    }
+                }
                 throw new Error(data.msg || 'API请求失败');
             }
 
@@ -184,6 +209,33 @@ class FeishuAPI {
             page_size: '100'
         });
         return await this.request(`${endpoint}?${params}`);
+    }
+
+    // 获取电子表格基础信息
+    async getSpreadsheetInfo(spreadsheetToken, userIdType = 'open_id') {
+        const endpoint = `/sheets/v3/spreadsheets/${spreadsheetToken}`;
+        const params = new URLSearchParams({
+            user_id_type: userIdType
+        });
+        return await this.request(`${endpoint}?${params}`);
+    }
+
+    // 获取电子表格工作表列表
+    async getSpreadsheetSheets(spreadsheetToken) {
+        const endpoint = `/sheets/v3/spreadsheets/${spreadsheetToken}/sheets`;
+        return await this.request(endpoint);
+    }
+
+    // 获取电子表格单元格数据
+    async getSpreadsheetCells(spreadsheetToken, sheetId, range = '') {
+        const endpoint = `/sheets/v3/spreadsheets/${spreadsheetToken}/sheets/${sheetId}/values`;
+        if (range) {
+            const params = new URLSearchParams({
+                range: range
+            });
+            return await this.request(`${endpoint}?${params}`);
+        }
+        return await this.request(endpoint);
     }
 }
 

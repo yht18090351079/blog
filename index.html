@@ -12,9 +12,15 @@
     <div class="container">
         <header class="header">
             <h1>飞书文档浏览器</h1>
-            <div class="loading-indicator" id="loadingIndicator" style="display: none;">
-                <div class="spinner"></div>
-                <span>加载中...</span>
+            <div class="header-actions">
+                <div class="auth-status" id="authStatus" style="display: none;">
+                    <span class="auth-info" id="authInfo"></span>
+                    <button class="auth-btn" id="authBtn">登录</button>
+                </div>
+                <div class="loading-indicator" id="loadingIndicator" style="display: none;">
+                    <div class="spinner"></div>
+                    <span>加载中...</span>
+                </div>
             </div>
         </header>
 
@@ -68,6 +74,7 @@
     </div>
 
     <script src="config.js"></script>
+    <script src="auth-manager.js"></script>
     <script src="feishu-api.js"></script>
     <script src="document-renderer.js"></script>
     <script src="app.js"></script>

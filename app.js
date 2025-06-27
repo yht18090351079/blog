@@ -9,6 +9,7 @@ class FeishuDocumentViewer {
     // 初始化应用
     async init() {
         this.setupEventListeners();
+        this.initializeAuth();
         await this.loadDocumentList();
     }
 
@@ -363,6 +364,99 @@ class FeishuDocumentViewer {
             const activeItem = document.querySelector(`[data-target="${activeHeading.id}"]`);
             if (activeItem) {
                 activeItem.classList.add('active');
+            }
+        }
+    }
+
+    // 初始化认证
+    initializeAuth() {
+        // 显示认证状态
+        const authStatus = document.getElementById('authStatus');
+        const authInfo = document.getElementById('authInfo');
+        const authBtn = document.getElementById('authBtn');
+
+        if (authStatus && authBtn) {
+            authStatus.style.display = 'flex';
+
+            // 设置按钮点击事件
+            authBtn.addEventListener('click', () => {
+                this.handleAuthAction();
+            });
+
+            // 更新认证状态显示
+            this.updateAuthStatus();
+
+            // 定期检查token状态
+            setInterval(() => {
+                this.updateAuthStatus();
+            }, 60000); // 每分钟检查一次
+        }
+    }
+
+    // 更新认证状态显示
+    updateAuthStatus() {
+        const authInfo = document.getElementById('authInfo');
+        const authBtn = document.getElementById('authBtn');
+
+        if (!window.authManager || !authInfo || !authBtn) return;
+
+        const status = window.authManager.getAuthStatus();
+
+        if (status.isAuthenticated) {
+            authInfo.textContent = '已登录';
+            authBtn.textContent = '注销';
+            authBtn.className = 'auth-btn authenticated';
+        } else if (status.hasToken && status.isExpired) {
+            authInfo.textContent = 'Token已过期';
+            authBtn.textContent = '重新登录';
+            authBtn.className = 'auth-btn';
+        } else {
+            authInfo.textContent = '未登录';
+            authBtn.textContent = '登录';
+            authBtn.className = 'auth-btn';
+        }
+    }
+
+    // 处理认证操作
+    async handleAuthAction() {
+        const authBtn = document.getElementById('authBtn');
+        const originalText = authBtn.textContent;
+
+        if (!window.authManager) {
+            this.showError('认证管理器未初始化');
+            return;
+        }
+
+        const status = window.authManager.getAuthStatus();
+
+        if (status.isAuthenticated) {
+            // 注销
+            window.authManager.logout();
+            this.updateAuthStatus();
+            this.showError('已注销，需要重新登录才能访问某些内容');
+        } else {
+            // 登录
+            try {
+                authBtn.textContent = '登录中...';
+                authBtn.disabled = true;
+
+                await window.authManager.startOAuthFlow();
+
+                this.updateAuthStatus();
+                this.showError('登录成功！现在可以访问更多内容');
+
+                // 如果当前有文档在显示，可能需要重新加载
+                if (this.currentDocument) {
+                    await this.loadDocumentContent(this.currentDocument.id);
+                }
+
+            } catch (error) {
+                console.error('登录失败:', error);
+                this.showError('登录失败: ' + error.message);
+            } finally {
+                authBtn.textContent = originalText;
+                authBtn.disabled = false;
+                this.updateAuthStatus();
             }
         }
     }
