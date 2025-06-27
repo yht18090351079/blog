@@ -32,6 +32,27 @@
 └── README.md           # 说明文档
 ```
 
+## 🚀 部署选项
+
+### Netlify部署（推荐生产环境）
+
+本项目已完全配置好Netlify部署：
+
+- ✅ Netlify Functions代理服务
+- ✅ 自动CORS处理  
+- ✅ 静态文件托管
+- ✅ 免费HTTPS支持
+- ✅ 全球CDN加速
+
+**快速部署步骤**：
+1. 推送代码到Git仓库（GitHub/GitLab/Bitbucket）
+2. 在 [Netlify](https://netlify.com) 中连接仓库
+3. 自动部署完成！
+
+详细部署说明请参考：[NETLIFY_DEPLOY.md](./NETLIFY_DEPLOY.md)
+
+### 本地开发
+
 ## 快速开始
 
 ### 1. 配置API信息

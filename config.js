@@ -14,9 +14,9 @@ const CONFIG = {
     API_BASE_URL: 'https://open.feishu.cn/open-apis',
 
     // 因为浏览器的CORS限制，需要使用代理服务器
-    // 这里可以配置一个代理服务器URL，或者使用Chrome插件禁用CORS
+    // 在Netlify部署时使用Netlify Functions
     USE_PROXY: true,
-    PROXY_URL: 'http://localhost:3000',
+    PROXY_URL: '/api',
 
     // Emoji映射表（部分常用的）
     EMOJI_MAP: {
